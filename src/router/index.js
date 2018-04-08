@@ -7,7 +7,8 @@ import Img from '@/components/Img'
 import Day from '@/components/Day'
 import Page from '@/components/Page'
 import Massage from '@/components/Massage'
-
+import Login from '@/components/Login'
+import Reg from '@/components/Reg'
 
 Vue.use(Router)
 
@@ -47,6 +48,16 @@ export default new Router({
       path: "/page",
       name: "page",
       component: Page
+    },
+    {
+      path: "/login",
+      name: "login",
+      component: Login
+    },
+    {
+      path: "/reg",
+      name: "reg",
+      component: Reg
     }
   ]
 })
