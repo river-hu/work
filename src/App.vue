@@ -5,31 +5,31 @@
                 <Menu mode="horizontal" theme="dark" active-name="1">
                     <div class="layout-logo">测试名称</div>
                     <div class="layout-nav">
-                        <router-link to="/">
+                        <router-link to="/home/1">
                          <MenuItem name="1">
                             <Icon type="ios-navigate"></Icon>
                             主页
                         </MenuItem>
                         </router-link>
-                       <router-link to="/about">
+                       <router-link to="/about/1">
                         <MenuItem name="2">
                             <Icon type="ios-keypad"></Icon>
                             个人简介
                         </MenuItem>
                         </router-link>
-                       <router-link to="/photo">
+                       <router-link to="/photo/1">
                         <MenuItem name="3">
                             <Icon type="ios-analytics"></Icon>
                             我的相册
                         </MenuItem>
                         </router-link>
-                       <router-link to="/day">
+                       <router-link to="/day/1">
                         <MenuItem name="4">
                             <Icon type="ios-paper"></Icon>
                             我的日志
                         </MenuItem>
                         </router-link>
-                       <router-link to="/massage">
+                       <router-link to="/massage/1">
                          <MenuItem name="5">
                             <Icon type="compose"></Icon>
                             留言板
@@ -41,7 +41,10 @@
             </Header>
             <Content :style="{padding: '0 50px'}">
                <Row class="btop">
-                    <Tag class="login">登录／注册</Tag>
+                   <router-link to="/login">
+                            <Tag class="login">登录／注册</Tag>
+                   </router-link>
+                    
                </Row>
                 <div class="body">
                     <transition name="slide-fade" mode="out-in">

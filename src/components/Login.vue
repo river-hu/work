@@ -7,17 +7,17 @@
       <Col span="12">
       <Form ref="formInline" class="from">
         <Form-item prop="user">
-          <Input type="text"  placeholder="Username">
+          <Input type="text" v-model="user"  placeholder="邮箱">
           <Icon type="ios-person-outline" slot="prepend"></Icon>
           </Input>
         </Form-item>
         <Form-item prop="password">
-          <Input type="password"  placeholder="Password">
+          <Input type="password" v-model="pass"  placeholder="密码">
           <Icon type="ios-locked-outline" slot="prepend"></Icon>
           </Input>
         </Form-item>
         <Form-item>
-          <Button type="primary">登录</Button>
+          <Button type="primary" @click="login">登录</Button>
           <router-link to="/reg">
             <Button type="primary">注册</Button>
           </router-link>
@@ -29,7 +29,28 @@
 </template>
 <script>
   export default{
-      name:"login"
+      name:"login",
+      data(){
+        return{
+          user:'',
+          pass:''
+        }
+      },
+      methods:{
+        login(){
+             var params =  "name="+this.user+ "&password="+this.pass;
+            this.$api.post('login.php', params, (data) => {
+              console.log(data);
+              if(data.length==1){
+                this.$Message.success('登陆成功');
+                localStorage.setItem("userid",data[0].id);
+                this.$router.push('/home/'+data[0].id);
+              }else{
+                this.$Message.error('账号密码错误');
+              }
+          })
+        }
+      }
   }
 </script>
 <style scoped>

@@ -15,37 +15,37 @@ Vue.use(Router)
 export default new Router({
   routes: [
     {
-      path: '/',
+      path: '/home/:id',
       name: 'home',
       component: Home
     },
     {
-      path: "/about",
+      path: "/about/:id",
       name: "about",
       component: About
     },
     {
-      path: "/photo",
+      path: "/photo/:id",
       name: "photo",
       component: Photo
     },
     {
-      path: "/img",
+      path: "/img/:imgid",
       name: "img",
       component: Img
     },
     {
-      path: "/day",
+      path: "/day/:id",
       name: "day",
       component: Day
     },
     {
-      path: "/massage",
+      path: "/massage/:id",
       name: "massage",
       component: Massage
     },
     {
-      path: "/page",
+      path: "/page/:pageid",
       name: "page",
       component: Page
     },

@@ -3,43 +3,39 @@
       <Row :gutter="16">
            <Col span="6">
             <div class="title">
-                博客分类
+                博客分类 <span class="add" @click="addsort"><Icon type="plus-round"></Icon></span>
             </div>
-            <div class="list">
-                最新博客
+            <div class="list" v-for="v in user.pages">
+                {{v.title}}
             </div>
-            <div class="list">
-                热门
-            </div>
-            <div class="list">
-                vue
-            </div>
-            <div class="list">
-                微信小程序
+            <div class="list" v-show="sortoff">
+                <Input v-model="sortname" placeholder="输入分类名" clearable style="width:90%"></Input>
+                <Button type="info" size="small" @click="confirm">确定</Button>
+                <Button size="small" @click="cancel">取消</Button>
             </div>
             <div class="title">
                 关于博主
             </div>
             <div class="about">
-                <img src="http://ccdn.goodq.top/caches/b2ac3c765e8751bf8ed83348310feed1/aHR0cDovLzU2YjAwNTk3MGNmYzcudDczLnFpZmVpeWUuY29tL3FmeS1jb250ZW50L3VwbG9hZHMvMjAxNy8wNi8xZGUwMGQzM2U0YjQ3YjYyMjU3ZjhiYjllODA2MTU5ZC5wbmc_p_p100_p_3D.png" alt="">
+                <img :src="user.header" alt="">
                 <div class="about_body">
                     <div class="listr">
-                        姓名：测试姓名
+                        姓名：{{user.name}}
                     </div>
                     <div class="listr">
-                        出生日期：2012-08-21
+                        出生日期：{{user.days}}
                     </div>
                     <div class="listr">
-                        星座：处女座                        
+                        邮箱：{{user.email}}                      
                     </div>
                     <div class="listr">
-                        现居城市：郑州
+                        现居城市：{{user.city}}  
                     </div>
                     <div class="listr">
-                        职业：web开发工程师
+                        性别：{{user.sex==1?'男':'女'}}
                     </div>
                     <div class="listr">
-                        爱好：美食、旅行、电影
+                        爱好：{{user.liker}}
                     </div>
                 </div>
             </div>
@@ -49,7 +45,6 @@
                 <div class="listr">
                     <div class="title1">
                         <router-link to="page">个人网站搭建技术</router-link>
-                        
                     </div>
                     <router-link to="page">
                     <div class="img">  
@@ -61,10 +56,10 @@
                 </div>
                 <div class="listr">
                     <div class="title1">
-                        <router-link to="page">个人网站搭建技术</router-link>
+                        <router-link to="page/1">个人网站搭建技术</router-link>
                         
                     </div>
-                    <router-link to="page">
+                    <router-link to="page/1">
                     <div class="img">  
                     </div>
                      </router-link>
@@ -74,10 +69,10 @@
                 </div>
                 <div class="listr">
                     <div class="title1">
-                        <router-link to="page">个人网站搭建技术</router-link>
+                        <router-link to="page/1">个人网站搭建技术</router-link>
                         
                     </div>
-                    <router-link to="page">
+                    <router-link to="page/1">
                     <div class="img">  
                     </div>
                      </router-link>
@@ -87,14 +82,14 @@
                 </div>
                 <div class="listr">
                     <div class="title1">
-                        <router-link to="page">个人网站搭建技术</router-link>
+                        <router-link to="page/1">个人网站搭建技术</router-link>
                         
                     </div>
-                    <router-link to="page">
+                    <router-link to="page/1">
                     <div class="img">  
                     </div>
                      </router-link>
-                     <div class="dec">
+                     <div class="dec/1">
                          普通青年的空余时间，大部分都会交付给游戏，他们喜欢厮杀和战斗，来消磨无处释放的压力和精力，而文艺青年空闲时，会冲上一杯清爽的绿茶，抱着一本极文艺的书籍，慢慢地细细品味，整个身心都徜徉在美轮美奂的幻想里。
                      </div>
                 </div>
@@ -105,7 +100,41 @@
 </template>
 <script>
 export default {
-  name:"Home"
+  name:"Home",
+  data(){
+      return {
+          user:{},
+          sortname:'',
+          sortoff:false,
+          id:0
+      }
+  },
+  methods:{
+      addsort(){
+          this.sortoff = true;
+      },
+      cancel(){
+           this.sortoff = false;
+           this.sortname = '';
+      },
+      confirm(){
+         let id= this.id;
+         var name = this.sortname;
+        this.$api.get("addsort.php",{id:id,scroe:0,sortname:name},(data)=>{
+          this.user.pages=data;
+           this.sortoff = false;
+           this.sortname = '';
+      })
+      }
+  },
+  created(){
+      this.id = this.$route.params.id;
+      let id = this.id;
+      this.$api.get("home.php",{id:id},(data)=>{
+          console.log(data);
+          this.user=data[0];
+      })
+  }
 }
 </script>
 <style scoped>
@@ -158,6 +187,14 @@ export default {
     .content .dec{
         font-size: 14px;
         margin-top: 20px;
+    }
+    .add{
+        float: right;
+        font-size: 20px;
+        margin-right: 5px;
+    }
+    .add:hover{
+        color: #ed3f14;
     }
 </style>
 
