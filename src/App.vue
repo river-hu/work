@@ -5,31 +5,31 @@
                 <Menu mode="horizontal" theme="dark" active-name="1">
                     <div class="layout-logo">测试名称</div>
                     <div class="layout-nav">
-                        <router-link to="/home/1">
+                        <router-link :to="'/home/'+id">
                          <MenuItem name="1">
                             <Icon type="ios-navigate"></Icon>
                             主页
                         </MenuItem>
                         </router-link>
-                       <router-link to="/about/1">
+                       <router-link :to="'/about/'+id">
                         <MenuItem name="2">
                             <Icon type="ios-keypad"></Icon>
                             个人简介
                         </MenuItem>
                         </router-link>
-                       <router-link to="/photo/1">
+                       <router-link :to="'/photo/'+id">
                         <MenuItem name="3">
                             <Icon type="ios-analytics"></Icon>
                             我的相册
                         </MenuItem>
                         </router-link>
-                       <router-link to="/day/1">
+                       <router-link :to="'/day/'+id">
                         <MenuItem name="4">
                             <Icon type="ios-paper"></Icon>
                             我的日志
                         </MenuItem>
                         </router-link>
-                       <router-link to="/massage/1">
+                       <router-link :to="'/massage/'+id">
                          <MenuItem name="5">
                             <Icon type="compose"></Icon>
                             留言板
@@ -65,8 +65,11 @@ export default {
   name: 'App',
   data(){
       return {
-　　　　　　transitionName: 'slide-right'  // 默认动态路由变化为slide-right
+　　　　　　id:0
 　　　　}
+  },
+  created(){
+      this.id = this.$route.params.id;
   }
 }
 </script>

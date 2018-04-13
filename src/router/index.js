@@ -9,8 +9,14 @@ import Page from '@/components/Page'
 import Massage from '@/components/Massage'
 import Login from '@/components/Login'
 import Reg from '@/components/Reg'
+import Addpage from '@/components/Addpage'
+import VueQuillEditor from 'vue-quill-editor'
+import 'quill/dist/quill.core.css'
+import 'quill/dist/quill.snow.css'
+import 'quill/dist/quill.bubble.css'
 
 Vue.use(Router)
+Vue.use(VueQuillEditor, /* { default global options } */)
 
 export default new Router({
   routes: [
@@ -45,9 +51,14 @@ export default new Router({
       component: Massage
     },
     {
-      path: "/page/:pageid",
+      path: "/page/:id",
       name: "page",
       component: Page
+    },
+    {
+      path: "/addpage/:id",
+      name: "addpage",
+      component: Addpage
     },
     {
       path: "/login",

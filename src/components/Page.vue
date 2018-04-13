@@ -1,16 +1,28 @@
 <template>
   <div id="page">
-    <div class="title">文章的标题</div>
-    <div class="img">  
+    <div class="title">{{page.title}}</div>
+    <div class="img" :style="{'background-image':'url(http://127.0.0.1/workphp/img/'+page.img+')'}">  
     </div>
-    <div class="content">
-      文章的内容，富文本数据
+    <div class="content" v-html="page.content">
     </div>
   </div>
 </template>
 <script>
 export default {
-  name:"page"
+  name:"page",
+  data(){
+    return{
+      page:{},
+      pageid:0
+    }
+  },
+  created(){
+    this.pageid = this.$route.query.pageid;
+    this.$api.get("page.php",{id:'-1',sortid:'-1',pageid:this.pageid},(data)=>{
+          console.log(data);
+          this.page=data[0];
+      })
+  }
 }
 </script>
 <style scoped>

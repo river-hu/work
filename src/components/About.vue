@@ -5,13 +5,14 @@
       </div>
       <Row :gutter="32" class="body">
           <Col span="6">
-                <img src="http://ccdn.goodq.top/caches/b2ac3c765e8751bf8ed83348310feed1/aHR0cDovLzU2YjAwNTk3MGNmYzcudDczLnFpZmVpeWUuY29tL3FmeS1jb250ZW50L3VwbG9hZHMvMjAxNy8wNi8xZGUwMGQzM2U0YjQ3YjYyMjU3ZjhiYjllODA2MTU5ZC5wbmc_p_p100_p_3D.png" alt="">
+                <img :src="user.header" alt="">
           </Col>
           <Col span="18">
                 <div class="title">个人简介</div>
-                <div class="content"> 这里是关于我的内容模块，您可以双击这里或者点击编辑按钮来修改内容。这里是关于我的内容模块，您可以双击这里或者点击编辑按钮来修改内容。这里是关于我的内容模块，您可以双击这里或者点击编辑按钮来修改内容。这里是关于我的内容模块，您可以双击这里或者点击编辑按钮来修改内容。<br>
- 
-这里是关于我的内容模块，您可以双击这里或者点击编辑按钮来修改内容。这里是关于我的内容模块，您可以双击这里或者点击编辑按钮来修改内容。这里是关于我的内容模块，您可以双击这里或者点击编辑按钮来修改内容。 </div>
+                <div class="content" v-if="!setoff" @dblclick="setcontent"> {{user.dec}} </div>
+                <div class="setcontent" v-if="setoff">
+                    <Input v-model="user.dec" type="textarea" @blur="submit"  placeholder="输入个人简介"></Input>
+                </div>
                <Row>
                    <Col span="12">
                         <div class="title">
@@ -60,7 +61,33 @@
 </template>
 <script>
 export default {
-  name:"about"
+  name:"about",
+  data(){
+      return{
+          id:'',
+          user:{},
+          setoff:false
+      }
+  },
+  methods:{
+      setcontent(){
+          let id = localStorage.getItem("userid");
+          if(id==this.id){
+              this.setoff=true;
+          }
+      },
+      submit(){
+          
+      }
+  },
+  created(){
+      this.id = this.$route.params.id;
+      let id = this.id;
+      this.$api.get("home.php",{id:id},(data)=>{
+          console.log(data);
+          this.user=data[0];
+      })
+  }
 }
 </script>
 <style scoped>

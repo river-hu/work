@@ -5,7 +5,7 @@
             <div class="title">
                 博客分类 <span class="add" @click="addsort"><Icon type="plus-round"></Icon></span>
             </div>
-            <div class="list" v-for="v in user.pages">
+            <div class="list" :class="{active:pageindex==index}" v-for="(v,index) in user.pages" @click="togglesort(index)">
                 {{v.title}}
             </div>
             <div class="list" v-show="sortoff">
@@ -42,57 +42,27 @@
             </Col>
             <Col span="18">
             <div class="content">
-                <div class="listr">
+                <div class="addpage">
+                    <!-- <Icon type="compose"></Icon> -->
+                    <router-link :to="'/addpage/'+id">
+                        <Button class="addbtn" shape="circle" icon="compose"></Button>
+                        <Button type="text" size="small">写博客</Button>
+                    </router-link>
+                   
+                </div>
+                <div class="listr" v-for="v in pagearr">
                     <div class="title1">
-                        <router-link to="page">个人网站搭建技术</router-link>
+                        <router-link  :to="'/page/'+id+'?pageid='+v.id">{{v.title}}</router-link>
                     </div>
-                    <router-link to="page">
-                    <div class="img">  
+                    <router-link :to="'/page/'+id+'?pageid='+v.id">
+                    <div class="img" :style="{'background-image':'url(http://127.0.0.1/workphp/img/'+v.img+')'}">  
                     </div>
                      </router-link>
                      <div class="dec">
-                         普通青年的空余时间，大部分都会交付给游戏，他们喜欢厮杀和战斗，来消磨无处释放的压力和精力，而文艺青年空闲时，会冲上一杯清爽的绿茶，抱着一本极文艺的书籍，慢慢地细细品味，整个身心都徜徉在美轮美奂的幻想里。
+                         {{v.dec}}
                      </div>
                 </div>
-                <div class="listr">
-                    <div class="title1">
-                        <router-link to="page/1">个人网站搭建技术</router-link>
-                        
-                    </div>
-                    <router-link to="page/1">
-                    <div class="img">  
-                    </div>
-                     </router-link>
-                     <div class="dec">
-                         普通青年的空余时间，大部分都会交付给游戏，他们喜欢厮杀和战斗，来消磨无处释放的压力和精力，而文艺青年空闲时，会冲上一杯清爽的绿茶，抱着一本极文艺的书籍，慢慢地细细品味，整个身心都徜徉在美轮美奂的幻想里。
-                     </div>
-                </div>
-                <div class="listr">
-                    <div class="title1">
-                        <router-link to="page/1">个人网站搭建技术</router-link>
-                        
-                    </div>
-                    <router-link to="page/1">
-                    <div class="img">  
-                    </div>
-                     </router-link>
-                     <div class="dec">
-                         普通青年的空余时间，大部分都会交付给游戏，他们喜欢厮杀和战斗，来消磨无处释放的压力和精力，而文艺青年空闲时，会冲上一杯清爽的绿茶，抱着一本极文艺的书籍，慢慢地细细品味，整个身心都徜徉在美轮美奂的幻想里。
-                     </div>
-                </div>
-                <div class="listr">
-                    <div class="title1">
-                        <router-link to="page/1">个人网站搭建技术</router-link>
-                        
-                    </div>
-                    <router-link to="page/1">
-                    <div class="img">  
-                    </div>
-                     </router-link>
-                     <div class="dec/1">
-                         普通青年的空余时间，大部分都会交付给游戏，他们喜欢厮杀和战斗，来消磨无处释放的压力和精力，而文艺青年空闲时，会冲上一杯清爽的绿茶，抱着一本极文艺的书籍，慢慢地细细品味，整个身心都徜徉在美轮美奂的幻想里。
-                     </div>
-                </div>
+                
             </div>
             </Col>
       </Row>
@@ -106,7 +76,9 @@ export default {
           user:{},
           sortname:'',
           sortoff:false,
-          id:0
+          id:0,
+          pagearr:[],
+          pageindex:-1
       }
   },
   methods:{
@@ -120,10 +92,19 @@ export default {
       confirm(){
          let id= this.id;
          var name = this.sortname;
-        this.$api.get("addsort.php",{id:id,scroe:0,sortname:name},(data)=>{
+        this.$api.get("addsort.php",{id:id,scroe:0,sortname:name,sortid:'-1'},(data)=>{
+            console.log(data);
           this.user.pages=data;
            this.sortoff = false;
            this.sortname = '';
+      })
+      },
+      togglesort(index){
+          let sortid = this.user.pages[index].id;
+          this.pageindex = index;
+            this.$api.get("page.php",{id:this.id,sortid:sortid,pageid:'-1'},(data)=>{
+          console.log(data);
+          this.pagearr=data;
       })
       }
   },
@@ -133,6 +114,10 @@ export default {
       this.$api.get("home.php",{id:id},(data)=>{
           console.log(data);
           this.user=data[0];
+      })
+      this.$api.get("page.php",{id:id,sortid:'-1',pageid:'-1'},(data)=>{
+          console.log(data);
+          this.pagearr=data;
       })
   }
 }
@@ -144,6 +129,9 @@ export default {
         line-height: 30px;
         border-bottom: 2px solid #608a60;
         margin-top: 10px;
+    }
+    .active{
+        color: #ed3f14;
     }
     .title1{
         font-size: 22px;
@@ -159,6 +147,7 @@ export default {
         line-height: 35px;
         padding-left: 10px;
         font-size: 15px;
+        cursor: pointer;
     }
     .about img{
         width: 100%;
@@ -195,6 +184,16 @@ export default {
     }
     .add:hover{
         color: #ed3f14;
+    }
+    .addbtn{
+        background: #608a60;
+        color: #fff;
+    }
+    .addpage{
+        text-align: right;
+    }
+    .addpage button{
+        outline: none;
     }
 </style>
 
