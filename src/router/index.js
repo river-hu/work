@@ -3,7 +3,6 @@ import Router from 'vue-router'
 import Home from '@/components/Home'
 import About from '@/components/About'
 import Photo from '@/components/Photo'
-import Img from '@/components/Img'
 import Day from '@/components/Day'
 import Page from '@/components/Page'
 import Massage from '@/components/Massage'
@@ -34,11 +33,6 @@ export default new Router({
       path: "/photo/:id",
       name: "photo",
       component: Photo
-    },
-    {
-      path: "/img/:imgid",
-      name: "img",
-      component: Img
     },
     {
       path: "/day/:id",

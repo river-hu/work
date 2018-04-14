@@ -11,47 +11,37 @@
                 <div class="title">个人简介</div>
                 <div class="content" v-if="!setoff" @dblclick="setcontent"> {{user.dec}} </div>
                 <div class="setcontent" v-if="setoff">
-                    <Input v-model="user.dec" type="textarea" @blur="submit"  placeholder="输入个人简介"></Input>
+                    <Input v-model="user.dec" type="textarea" @on-blur="submit"  placeholder="输入个人简介"></Input>
                 </div>
                <Row>
                    <Col span="12">
                         <div class="title">
                             工作经验
+                            <span class="add" @click="addworkf"><Icon type="plus-round"></Icon></span>
                         </div>
-                        <div class="list">
-                            2017年－2018年 郑州广之迪点子科技有限公司
+                        <div class="list" v-for="(v,index) in workarr">
+                            <div v-if="index!=workindex" @dblclick="setoffwork(index)">
+                                {{v.content}}
+                            </div>
+                            <Input v-else v-model="workarr[index].content" placeholder="请输入你的工作经验" clearable style="width: 100%" @on-blur="updatawork(index)"></Input>
                         </div>
-                        <div class="list">
-                            2017年－2018年 郑州广之迪点子科技有限公司                            
-                        </div>
-                        <div class="list">
-                            2017年－2018年 郑州广之迪点子科技有限公司
-                        </div>
-                        <div class="list">
-                            2017年－2018年 郑州广之迪点子科技有限公司
-                        </div>
-                        <div class="list">
-                            2017年－2018年 郑州广之迪点子科技有限公司
+                        <div class="list" v-if="workoff">
+                           <Input v-model="addwork" placeholder="请输入你的工作经验" clearable style="width: 100%" @on-blur="submitwork"></Input>
                         </div>
                    </Col>
                    <Col span="12">
                         <div class="title">
                             项目经验
+                            <span class="add" @click="addprof"><Icon type="plus-round"></Icon></span>
                         </div>
-                        <div class="list">
-                            2017年－2018年 郑州广之迪点子科技有限公司
+                       <div class="list" v-for="(v,index) in proarr">
+                            <div v-if="index!=proindex" @dblclick="setoffpro(index)">
+                                {{v.content}}
+                            </div>
+                            <Input v-else v-model="proarr[index].content" placeholder="请输入你的项目经验" clearable style="width: 100%"  @on-blur="updatapro(index)"></Input>
                         </div>
-                        <div class="list">
-                            2017年－2018年 郑州广之迪点子科技有限公司
-                        </div>
-                        <div class="list">
-                            2017年－2018年 郑州广之迪点子科技有限公司
-                        </div>
-                        <div class="list">
-                            2017年－2018年 郑州广之迪点子科技有限公司
-                        </div>
-                        <div class="list">
-                            2017年－2018年 郑州广之迪点子科技有限公司
+                        <div class="list" v-if="prooff">
+                           <Input @on-blur="submitpro" v-model="addpro" placeholder="请输入你的项目经验" clearable style="width: 100%"></Input>
                         </div>
                    </Col>
                </Row>
@@ -61,63 +51,183 @@
 </template>
 <script>
 export default {
-  name:"about",
-  data(){
-      return{
-          id:'',
-          user:{},
-          setoff:false
-      }
+  name: "about",
+  data() {
+    return {
+      id: "",
+      user: {},
+      setoff: false,
+      workindex:-1,
+      proindex:-1,
+      workarr:[],
+      proarr:[],
+      workoff:false,
+      prooff:false,
+      addwork:'',
+      addpro:''
+    };
   },
-  methods:{
-      setcontent(){
-          let id = localStorage.getItem("userid");
-          if(id==this.id){
-              this.setoff=true;
-          }
-      },
-      submit(){
-          
+  methods: {
+    setcontent() {
+      let id = localStorage.getItem("userid");
+      if (id == this.id) {
+        this.setoff = true;
       }
-  },
-  created(){
-      this.id = this.$route.params.id;
-      let id = this.id;
-      this.$api.get("home.php",{id:id},(data)=>{
+    },
+    addworkf() {
+      this.workoff=true;
+    },
+    setoffwork(index){
+      this.workindex = index;
+    },
+    setoffpro(index){
+      this.proindex = index;
+    },
+    addprof() {
+      this.prooff=true;
+    },
+    submitwork(){
+      if(this.addwork==''){
+        this.workoff=false;
+      }else{
+         this.$api.get("experience.php", { userid: this.id,sortid:0,type:0 ,content:this.addwork}, data => {
           console.log(data);
-          this.user=data[0];
-      })
+          this.workarr = data;
+          this.workoff=false;
+        });
+      }
+    },
+    submitpro(){
+      if(this.addpro==''){
+        this.prooff=false;
+      }else{
+         this.$api.get("experience.php", { userid: this.id,sortid:1,type:0 ,content:this.addpro}, data => {
+          console.log(data);
+          this.proarr = data;
+          this.prooff=false;
+        });
+      }
+    },
+    submit() {
+      this.$api.get(
+        "setuser.php",
+        { id: this.id, name: "dec", value: this.user.dec },
+        data => {
+          console.log(data);
+          this.user = data[0];
+          this.setoff = false;
+        }
+      );
+    },
+    updatawork(index){
+      if(this.workarr[index].content==''){
+          if(confirm("是否确认删除")){
+              let id = this.workarr[index].id;
+              this.$api.get("experience.php", { id:id,userid: this.id,sortid:0,type:2 }, data => {
+                console.log(data);
+                this.workarr = data;
+                this.workindex=-1;
+              });
+          }else{
+              this.$api.get("experience.php", { userid: this.id,sortid:0,type:3}, data => {
+                console.log(data);
+                this.workarr = data;
+                this.workindex=-1;
+              });
+          }
+      }else{
+        let id = this.workarr[index].id;
+        let content = this.workarr[index].content;
+        this.$api.get("experience.php", { id:id,userid: this.id,sortid:0,type:1 ,content:content}, data => {
+          console.log(data);
+          this.workarr = data;
+          this.workindex=-1;
+        });
+      }
+    },
+    updatapro(index){
+      if(this.proarr[index].content==''){
+          if(confirm("是否确认删除")){
+              let id = this.proarr[index].id;
+              this.$api.get("experience.php", { id:id,userid: this.id,sortid:1,type:2 }, data => {
+                console.log(data);
+                this.proarr = data;
+                this.proindex=-1;
+              });
+          }else{
+              this.$api.get("experience.php", { userid: this.id,sortid:1,type:3}, data => {
+                console.log(data);
+                this.proarr = data;
+                this.proindex=-1;
+              });
+          }
+      }else{
+        let id = this.proarr[index].id;
+        let content = this.proarr[index].content;
+        this.$api.get("experience.php", { id:id,userid: this.id,sortid:1,type:1 ,content:content}, data => {
+          console.log(data);
+          this.proarr = data;
+          this.proindex=-1;
+        });
+      }
+    }
+  },
+  created() {
+    this.id = this.$route.params.id;
+    let id = this.id;
+    this.$api.get("home.php", { id: id }, data => {
+      console.log(data);
+      this.user = data[0];
+    });
+    this.$api.get("experience.php", { userid: id,sortid:0,type:3}, data => {
+      console.log(data);
+      this.workarr = data;
+    });
+    this.$api.get("experience.php", { userid: id,sortid:1,type:3 }, data => {
+      console.log(data);
+      this.proarr = data;
+    });
+
   }
-}
+};
 </script>
 <style scoped>
-.header{
-    color: #666;       
-    font-size: 18px;
-    line-height: 30px;
-    border-bottom: 2px solid #608a60;
-    margin-top: 10px;
+.header {
+  color: #666;
+  font-size: 18px;
+  line-height: 30px;
+  border-bottom: 2px solid #608a60;
+  margin-top: 10px;
 }
-.body{
-    padding-top: 20px;
+.body {
+  padding-top: 20px;
 }
-.body img{
-    width: 100%;
+.body img {
+  width: 100%;
 }
-.title{
-    font-size: 15px;
-    color: #333;
-    line-height: 50px;
+.title {
+  font-size: 15px;
+  color: #333;
+  line-height: 50px;
 }
-.list{
-    font-size: 14px;
-    color: #666;
+.add {
+  float: right;
+  font-size: 20px;
+  margin-right: 15px;
 }
-.content{
-    font-size: 15px;
-    padding-bottom: 30px;
-    border-bottom: 1px dashed #ccc;
-    line-height: 22px;
+.add:hover {
+  color: #ed3f14;
+}
+
+.list {
+  font-size: 14px;
+  color: #666;
+}
+.content {
+  font-size: 15px;
+  padding-bottom: 30px;
+  border-bottom: 1px dashed #ccc;
+  line-height: 22px;
 }
 </style>
 
