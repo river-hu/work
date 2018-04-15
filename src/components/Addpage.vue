@@ -1,7 +1,7 @@
 <template>
   <div id="addpage">
       <div class="title">
-           <Select v-model="model1" style="width:20%">
+           <Select v-model="model1" style="width:20%" v-if="type==0">
                 <Option v-for="item in cityList" :value="item.id" :key="item.id">{{ item.title }}</Option>
             </Select>
             <Input v-model="title" placeholder="请输入文章的标题" clearable style="width: 75%"></Input>
@@ -33,6 +33,7 @@
         :before-upload="handleBeforeUpload"
         type="drag"
         name="file"
+        :data="{id:id}"
         action="http://127.0.0.1/workphp/uploadimg.php"
         style="display: inline-block;width:58px;">
         <div style="width: 58px;height:58px;line-height: 58px;">
@@ -40,7 +41,7 @@
         </div>
     </Upload>
     <Modal title="View Image" v-model="visible">
-        <img :src="'http://127.0.0.1/workphp/img/' + imgName" v-if="visible" style="width: 100%">
+        <img :src="'http://127.0.0.1/workphp/img/'+id+'/'+imgName" v-if="visible" style="width: 100%">
     </Modal>
         <quill-editor v-model="content"
                         ref="myQuillEditor"
@@ -65,22 +66,23 @@ export default {
     return {
       content: "请输入文章的内容",
       editorOption: {
-           modules: {
-            toolbar: [
-              ['bold', 'italic', 'underline', 'strike'],
-              ['blockquote', 'code-block'],
-              [{ 'header': 1 }, { 'header': 2 }],
-              [{ 'list': 'ordered' }, { 'list': 'bullet' }],
-              [{ 'script': 'sub' }, { 'script': 'super' }],
-              [{ 'indent': '-1' }, { 'indent': '+1' }],
-              [{ 'direction': 'rtl' }],
-              [{ 'size': ['small', false, 'large', 'huge'] }],
-              [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
-              [{ 'font': [] }],
-              [{ 'color': [] }, { 'background': [] }],
-              [{ 'align': [] }],
-              ['clean']
-            ]}
+        modules: {
+          toolbar: [
+            ["bold", "italic", "underline", "strike"],
+            ["blockquote", "code-block"],
+            [{ header: 1 }, { header: 2 }],
+            [{ list: "ordered" }, { list: "bullet" }],
+            [{ script: "sub" }, { script: "super" }],
+            [{ indent: "-1" }, { indent: "+1" }],
+            [{ direction: "rtl" }],
+            [{ size: ["small", false, "large", "huge"] }],
+            [{ header: [1, 2, 3, 4, 5, 6, false] }],
+            [{ font: [] }],
+            [{ color: [] }, { background: [] }],
+            [{ align: [] }],
+            ["clean"]
+          ]
+        }
       },
       cityList: [],
       model1: "",
@@ -90,7 +92,8 @@ export default {
       imgName: "",
       visible: false,
       uploadList: [],
-      id: ""
+      id: "",
+      type: ""
     };
   },
   // manually control the data synchronization
@@ -115,35 +118,49 @@ export default {
           title: "网站提示",
           desc: "文章标题不能为空 "
         });
-      }else if(this.dec == ""){
-          this.$Notice.error({
+      } else if (this.dec == "") {
+        this.$Notice.error({
           title: "网站提示",
           desc: "文章摘要不能为空 "
-        }); 
-      }else if(this.uploadList.length==0){
-          this.$Notice.error({
+        });
+      } else if (this.uploadList.length == 0) {
+        this.$Notice.error({
           title: "网站提示",
           desc: "文章封面图片不能为空 "
-        }); 
-      }else if(this.content==''){
-           this.$Notice.error({
+        });
+      } else if (this.content == "") {
+        this.$Notice.error({
           title: "网站提示",
           desc: "文章内容不能为空 "
-        }); 
-      }else{
-          let params ={
-              id:this.id,
-              sortid:this.model1,
-              scroe:1,
-              sortname:this.title,
-              img:this.uploadList[0].name,
-              content:this.content,
-              dec:this.dec
-          }
-         this.$api.get("addsort.php",params,(data)=>{
-         this.$router.push('/home/'+this.id);
-      })
-         
+        });
+      } else {
+        if (this.type == "0") {
+          let params = {
+            id: this.id,
+            sortid: this.model1,
+            scroe: 1,
+            sortname: this.title,
+            img: this.uploadList[0].name,
+            content: this.content,
+            dec: this.dec
+          };
+          this.$api.get("addsort.php", params, data => {
+            this.$router.push("/home/" + this.id);
+          });
+        }else{
+          let params = {
+            id: this.id,
+            sortid: -1,
+            scroe: 1,
+            sortname: this.title,
+            img: this.uploadList[0].name,
+            content: this.content,
+            dec: this.dec
+          };
+          this.$api.get("addsort.php", params, data => {
+            this.$router.push("/day/" + this.id);
+          });
+        }
       }
     },
     handleView(name) {
@@ -156,7 +173,7 @@ export default {
     },
     handleSuccess(res, file) {
       console.log(res);
-      file.url = "http://127.0.0.1/workphp/img/" + res;
+      file.url = "http://127.0.0.1/workphp/img/" + this.id + "/" + res;
       file.name = res;
     },
     handleFormatError(file) {
@@ -188,13 +205,18 @@ export default {
   },
   mounted() {
     this.uploadList = this.$refs.upload.fileList;
+
     this.id = this.$route.params.id;
+    this.type = this.$route.params.type;
     let id = this.id;
-    this.$api.get("home.php", { id: id }, data => {
-      console.log(data);
-      this.cityList = data[0].pages;
-      this.model1 = data[0].pages[0].id;
-    });
+    if (this.type == "0") {
+      this.$api.get("home.php", { id: id }, data => {
+        console.log(data);
+        this.cityList = data[0].pages;
+        this.model1 = data[0].pages[0].id;
+      });
+    } else {
+    }
   }
 };
 </script>

@@ -50,7 +50,7 @@ export default new Router({
       component: Page
     },
     {
-      path: "/addpage/:id",
+      path: "/addpage/:id/type/:type",
       name: "addpage",
       component: Addpage
     },

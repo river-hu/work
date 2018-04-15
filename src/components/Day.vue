@@ -1,31 +1,42 @@
 <template>
   <div id="day">
+    <div class="addpage">
+    <router-link :to="'/addpage/'+id+'/type/1'">
+                        <Button class="addbtn" shape="circle" icon="compose"></Button>
+                        <Button type="text" size="small">发日志</Button>
+                    </router-link>
+    </div> 
      <Timeline pending class="day">
-        <TimelineItem>
-            <p class="time">1976年</p>
-            <p class="content">Apple I 问世</p>
-        </TimelineItem>
-        <TimelineItem>
-            <p class="time">1984年</p>
-            <p class="content">发布 Macintosh</p>
-        </TimelineItem>
-        <TimelineItem>
-            <p class="time">2007年</p>
-            <p class="content">发布 iPhone</p>
-        </TimelineItem>
-        <TimelineItem>
-            <p class="time">2010年</p>
-            <p class="content">发布 iPad</p>
-        </TimelineItem>
-        <TimelineItem>
-            <a href="#" class="more">查看更多</a>
+        <TimelineItem v-for="(v,index) in pagearr" :key="index" >
+
+            <p class="time">{{v.datein|sub}}</p>
+            <p class="content">{{v.title}}</p>
         </TimelineItem>
     </Timeline>
   </div>
 </template>
 <script>
 export default {
-  name:"day"
+  name:"day",
+  data(){
+    return{
+      id:'',
+      pagearr:[]
+    }
+  },
+  filters:{
+    sub: function (value) {
+          if (!value) return '';
+          return value.substr(0,10);
+        }
+  },
+  created(){
+    this.id = this.$route.params.id;
+    this.$api.get("page.php",{id:this.id,sortid:'-1',pageid:'-1'},(data)=>{
+          console.log(data);
+          this.pagearr=data;
+      })
+  }
 }
 </script>
 <style scoped>
@@ -41,6 +52,16 @@ export default {
   .more{
     font-size: 18px;
   }
+   .addbtn{
+        background: #608a60;
+        color: #fff;
+    }
+    .addpage{
+        text-align: right;
+    }
+    .addpage button{
+        outline: none;
+    }
 </style>
 
 

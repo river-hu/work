@@ -9,6 +9,8 @@ import api from './api/index.js'
 Vue.use(iView)
 Vue.config.productionTip = false
 Vue.prototype.$api = api
+Vue.prototype.url = "http://127.0.0.1/workphp"
+
 
 /* eslint-disable no-new */
 new Vue({

@@ -44,7 +44,7 @@
             <div class="content">
                 <div class="addpage">
                     <!-- <Icon type="compose"></Icon> -->
-                    <router-link :to="'/addpage/'+id">
+                    <router-link :to="'/addpage/'+id+'/type/0'">
                         <Button class="addbtn" shape="circle" icon="compose"></Button>
                         <Button type="text" size="small">写博客</Button>
                     </router-link>
@@ -55,7 +55,7 @@
                         <router-link  :to="'/page/'+id+'?pageid='+v.id">{{v.title}}</router-link>
                     </div>
                     <router-link :to="'/page/'+id+'?pageid='+v.id">
-                    <div class="img" :style="{'background-image':'url(http://127.0.0.1/workphp/img/'+v.img+')'}">  
+                    <div class="img" :style="{'background-image':'url('+url+'/img/'+id+'/'+v.img+')'}">  
                     </div>
                      </router-link>
                      <div class="dec">
@@ -115,7 +115,7 @@ export default {
           console.log(data);
           this.user=data[0];
       })
-      this.$api.get("page.php",{id:id,sortid:'-1',pageid:'-1'},(data)=>{
+      this.$api.get("page.php",{id:id,sortid:'-2',pageid:'-1'},(data)=>{
           console.log(data);
           this.pagearr=data;
       })
