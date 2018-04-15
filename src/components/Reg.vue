@@ -1,7 +1,5 @@
 <template>
   <div id="reg">
-
-
   <Form ref="formValidate" :model="formValidate" :rules="ruleValidate" :label-width="80">
     <Form-item label="姓名" prop="name">
       <Input v-model="formValidate.name" placeholder="请输入姓名"></Input>
@@ -10,11 +8,10 @@
       <Input v-model="formValidate.mail" placeholder="请输入邮箱"></Input>
     </Form-item>
     <Form-item label="现居城市" prop="city">
-      <Select v-model="formValidate.city" placeholder="请选择所在地">
-        <Option value="beijing">北京市</Option>
-        <Option value="shanghai">上海市</Option>
-        <Option value="shenzhen">深圳市</Option>
-      </Select>
+      <Input v-model="formValidate.city" placeholder="请输入所在地"></Input>
+    </Form-item>
+    <Form-item label="密码" prop="password">
+      <Input v-model="formValidate.password" type="password" placeholder="请输入密码"></Input>
     </Form-item>
     <Form-item label="出生日期">
       <Row>
@@ -27,16 +24,22 @@
     </Form-item>
     <Form-item label="性别" prop="gender">
       <Radio-group v-model="formValidate.gender">
-        <Radio label="male">男</Radio>
-        <Radio label="female">女</Radio>
+        <Radio label="1">男</Radio>
+        <Radio label="2">女</Radio>
       </Radio-group>
     </Form-item>
     <Form-item label="爱好" prop="interest">
       <Checkbox-group v-model="formValidate.interest">
-        <Checkbox label="吃饭"></Checkbox>
+        <Checkbox label="美食"></Checkbox>
         <Checkbox label="睡觉"></Checkbox>
-        <Checkbox label="跑步"></Checkbox>
+        <Checkbox label="健身"></Checkbox>
         <Checkbox label="看电影"></Checkbox>
+        <Checkbox label="旅游"></Checkbox>
+        <Checkbox label="看书"></Checkbox>
+        <Checkbox label="看电视剧"></Checkbox>
+        <Checkbox label="动漫"></Checkbox>
+        <Checkbox label="逛街"></Checkbox>
+        <Checkbox label="学习"></Checkbox>
       </Checkbox-group>
     </Form-item>
     <Form-item label="介绍" prop="desc">
@@ -66,15 +69,16 @@
         :on-exceeded-size="handleMaxSize"
         :before-upload="handleBeforeUpload"
         multiple
+        :data="{id:id}"
         type="drag"
-        action="//jsonplaceholder.typicode.com/posts/"
+        :action="url+'/uploadimg.php'"
         style="display: inline-block;width:58px;">
         <div style="width: 58px;height:58px;line-height: 58px;">
           <Icon type="camera" size="20"></Icon>
         </div>
       </Upload>
       <Modal title="查看图片" v-model="visible">
-        <img :src="'https://o5wwk8baw.qnssl.com/' + imgName + '/large'" v-if="visible" style="width: 100%">
+        <img :src="url+'/img/'+id+'/' + imgName" v-if="visible" style="width: 100%">
       </Modal>
     </Form-item>
     <Form-item>
@@ -94,10 +98,11 @@
           mail: '',
           city: '',
           gender: '',
-          interest: [],
-          date: '',
+          interest: [],//数组需要转换成字符串
+          date: '',//时间戳需要转换
           time: '',
-          desc: ''
+          desc: '',
+          password:''
         },
         defaultList: [
 
@@ -114,35 +119,60 @@
             { type: 'email', message: '邮箱格式不正确', trigger: 'blur' }
           ],
           city: [
-            { required: true, message: '请选择城市', trigger: 'change' }
+            { required: true, message: '请输入城市', trigger: 'change' }
+          ],
+          password: [
+            { required: true, message: '请输入密码', trigger: 'change' }
           ],
           gender: [
             { required: true, message: '请选择性别', trigger: 'change' }
           ],
           interest: [
             { required: true, type: 'array', min: 1, message: '至少选择一个爱好', trigger: 'change' },
-            { type: 'array', max: 2, message: '最多选择两个爱好', trigger: 'change' }
+            { type: 'array', max: 4, message: '最多选择四个爱好', trigger: 'change' }
           ],
           date: [
             { required: true, type: 'date', message: '请选择日期', trigger: 'change' }
           ],
-          time: [
-            { required: true, type: 'date', message: '请选择时间', trigger: 'change' }
-          ],
           desc: [
             { required: true, message: '请输入个人介绍', trigger: 'blur' },
-            { type: 'string', min: 20, message: '介绍不能少于20字', trigger: 'blur' }
+            { type: 'string', min: 30, message: '介绍不能少于30字', trigger: 'blur' }
           ]
-        }
+        },
+        id:''
       }
     },
     methods: {
       handleSubmit (name) {
         this.$refs[name].validate((valid) => {
           if (valid) {
+
             this.$Message.success('提交成功!');
+            let params = new URLSearchParams();
+            params.append('id', this.id);
+            params.append('type', 1);
+            params.append('name', this.formValidate.name);
+            params.append('email', this.formValidate.mail);
+            params.append('city', this.formValidate.city);
+            this.formValidate.date
+            let a = new Date(this.formValidate.date);
+            let monum = Number(a.getMonth())+1;
+            let mouth = monum>10?monum:'0'+monum;
+            let day = Number(a.getDate());
+            day = day>10?day:'0'+day;
+            let time = a.getFullYear()+'-'+mouth+'-'+day;
+            params.append('days', time);
+            params.append('sex', this.formValidate.gender);
+            params.append('liker', this.formValidate.interest.toString());
+            params.append('dec', this.formValidate.desc);
+            params.append('header', this.imgName);
+            params.append('password', this.formValidate.password);
+            this.$api.post("regs.php", params, data => {
+                console.log(data);
+              });
           } else {
             this.$Message.error('表单验证失败!');
+            console.log(this.formValidate.date)
           }
         })
       },
@@ -160,8 +190,9 @@
       },
       handleSuccess (res, file) {
         // 因为上传过程为实例，这里模拟添加 url
-        file.url = 'https://o5wwk8baw.qnssl.com/7eb99afb9d5f317c912f08b5212fd69a/avatar';
-        file.name = '7eb99afb9d5f317c912f08b5212fd69a';
+        file.url = this.url+'/img/'+this.id+'/' +res;
+        this.imgName = res;
+        file.name = res;
       },
       handleFormatError (file) {
         this.$Notice.warning({
@@ -187,6 +218,12 @@
     },
     mounted(){
       this.uploadList = this.$refs.upload.fileList;
+      let params = new URLSearchParams();
+      params.append('type', 0);
+      this.$api.post("regs.php", params, data => {
+      console.log(data);
+      this.id = data;
+    });
     }
   }
 </script>

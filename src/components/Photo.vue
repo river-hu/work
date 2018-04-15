@@ -111,7 +111,8 @@ export default {
   created() {
     this.id = this.$route.params.id;
     let id = this.id;
-    this.$api.get("photo.php", { userid: id, sortid: 0, type: 3 }, data => {
+    this.$api.get("photo.php", { userid: id, sortid: 0, type: 4 }, data => {
+      console.log(data);
       this.imgarr = data;
     });
   }

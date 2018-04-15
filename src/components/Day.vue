@@ -8,7 +8,6 @@
     </div> 
      <Timeline pending class="day">
         <TimelineItem v-for="(v,index) in pagearr" :key="index" >
-
             <p class="time">{{v.datein|sub}}</p>
             <p class="content">{{v.title}}</p>
         </TimelineItem>
