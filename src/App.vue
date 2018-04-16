@@ -1,9 +1,9 @@
 <template>
   <div id="app">
            <Layout>
-            <Header>
+            <Header v-if="off">
                 <Menu mode="horizontal" theme="dark" active-name="1">
-                    <div class="layout-logo">测试名称</div>
+                    <div class="layout-logo">{{user.name}}</div>
                     <div class="layout-nav">
                         <router-link :to="'/home/'+id">
                          <MenuItem name="1">
@@ -65,11 +65,34 @@ export default {
   name: 'App',
   data(){
       return {
-　　　　　　id:0
+　　　　　　id:0,
+          off:true,
+          user:{}
 　　　　}
+  },
+  watch:{
+       $route(){
+           console.log('test');
+           this.id = this.$route.params.id;
+          if(this.id==undefined){
+          this.off=false;
+      }else{
+          this.off=true;
+      }
+      },
+      id(){
+          this.$api.get("home.php",{id:this.id},(data)=>{
+          console.log(data);
+          this.user=data[0];
+      })
+      }   
   },
   created(){
       this.id = this.$route.params.id;
+      if(this.id==undefined){
+          this.off=false;
+      }
+      console.log(this.id);
   }
 }
 </script>

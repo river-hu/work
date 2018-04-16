@@ -17,7 +17,7 @@
                 关于博主
             </div>
             <div class="about">
-                <img :src="user.header" alt="">
+                <img :src="url+'/img/'+id+'/'+user.header" alt="">
                 <div class="about_body">
                     <div class="listr">
                         姓名：{{user.name}}

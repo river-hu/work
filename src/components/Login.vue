@@ -50,6 +50,9 @@
               }
           })
         }
+      },
+      created(){
+        this.off =false;
       }
   }
 </script>
