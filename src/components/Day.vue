@@ -1,6 +1,6 @@
 <template>
   <div id="day">
-    <div class="addpage">
+    <div class="addpage" v-if="off">
     <router-link :to="'/addpage/'+id+'/type/1'">
                         <Button class="addbtn" shape="circle" icon="compose"></Button>
                         <Button type="text" size="small">发日志</Button>
@@ -20,7 +20,8 @@ export default {
   data(){
     return{
       id:'',
-      pagearr:[]
+      pagearr:[],
+      off:true
     }
   },
   filters:{
@@ -31,6 +32,7 @@ export default {
   },
   created(){
     this.id = this.$route.params.id;
+     this.off = this.$api.login(this.id);
     this.$api.get("page.php",{id:this.id,sortid:'-1',pageid:'-1'},(data)=>{
           console.log(data);
           this.pagearr=data;

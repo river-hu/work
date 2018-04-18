@@ -41,8 +41,8 @@
             </Header>
             <Content :style="{padding: '0 50px'}">
                <Row class="btop">
-                   <router-link to="/login">
-                            <Tag class="login">登录／注册</Tag>
+                   <router-link to="/login" >
+                            <Tag class="login">{{login?'已登录':'登录／注册'}}</Tag>
                    </router-link>
                     
                </Row>
@@ -67,7 +67,8 @@ export default {
       return {
 　　　　　　id:0,
           off:true,
-          user:{}
+          user:{},
+          login:true
 　　　　}
   },
   watch:{
@@ -90,6 +91,7 @@ export default {
       if(this.id==undefined){
           this.off=false;
       }
+      this.login = this.$api.login(this.id);
   }
 }
 </script>

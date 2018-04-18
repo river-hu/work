@@ -3,7 +3,7 @@
       <Row :gutter="16">
            <Col span="6">
             <div class="title">
-                博客分类 <span class="add" @click="addsort"><Icon type="plus-round"></Icon></span>
+                博客分类 <span v-if="off" class="add" @click="addsort"><Icon type="plus-round"></Icon></span>
             </div>
             <div class="list" :class="{active:pageindex==index}" v-for="(v,index) in user.pages" @click="togglesort(index)">
                 {{v.title}}
@@ -42,7 +42,7 @@
             </Col>
             <Col span="18">
             <div class="content">
-                <div class="addpage">
+                <div class="addpage" v-if="off">
                     <!-- <Icon type="compose"></Icon> -->
                     <router-link :to="'/addpage/'+id+'/type/0'">
                         <Button class="addbtn" shape="circle" icon="compose"></Button>
@@ -78,7 +78,8 @@ export default {
           sortoff:false,
           id:0,
           pagearr:[],
-          pageindex:-1
+          pageindex:-1,
+          off:true
       }
   },
   methods:{
@@ -119,6 +120,7 @@ export default {
           console.log(data);
           this.pagearr=data;
       })
+      this.off = this.$api.login(this.id);
   }
 }
 </script>
