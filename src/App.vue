@@ -72,7 +72,6 @@ export default {
   },
   watch:{
        $route(){
-           console.log('test');
            this.id = this.$route.params.id;
           if(this.id==undefined){
           this.off=false;
@@ -82,7 +81,6 @@ export default {
       },
       id(){
           this.$api.get("home.php",{id:this.id},(data)=>{
-          console.log(data);
           this.user=data[0];
       })
       }   
@@ -92,7 +90,6 @@ export default {
       if(this.id==undefined){
           this.off=false;
       }
-      console.log(this.id);
   }
 }
 </script>

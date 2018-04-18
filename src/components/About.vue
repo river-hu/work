@@ -2,10 +2,18 @@
   <div id="about">
       <div class="header">
           关于博主
+          <div class="addpage" v-if="off">
+                    <!-- <Icon type="compose"></Icon> -->
+                    <router-link :to="'/setuser/'+id">
+                        <Button class="addbtn" shape="circle" icon="compose"></Button>
+                        <Button type="text" size="small">修改个人信息</Button>
+                    </router-link>
+                   
+          </div>
       </div>
       <Row :gutter="32" class="body">
           <Col span="6">
-                <img :src="user.header" alt="">
+                <img :src="url+'/img/'+id+'/'+user.header" alt="">
           </Col>
           <Col span="18">
                 <div class="title">个人简介</div>
@@ -17,7 +25,7 @@
                    <Col span="12">
                         <div class="title">
                             工作经验
-                            <span class="add" @click="addworkf"><Icon type="plus-round"></Icon></span>
+                            <span class="add" v-if="off" @click="addworkf"><Icon type="plus-round"></Icon></span>
                         </div>
                         <div class="list" v-for="(v,index) in workarr">
                             <div v-if="index!=workindex" @dblclick="setoffwork(index)">
@@ -32,7 +40,7 @@
                    <Col span="12">
                         <div class="title">
                             项目经验
-                            <span class="add" @click="addprof"><Icon type="plus-round"></Icon></span>
+                            <span class="add" v-if="off" @click="addprof"><Icon type="plus-round"></Icon></span>
                         </div>
                        <div class="list" v-for="(v,index) in proarr">
                             <div v-if="index!=proindex" @dblclick="setoffpro(index)">
@@ -57,55 +65,71 @@ export default {
       id: "",
       user: {},
       setoff: false,
-      workindex:-1,
-      proindex:-1,
-      workarr:[],
-      proarr:[],
-      workoff:false,
-      prooff:false,
-      addwork:'',
-      addpro:''
+      workindex: -1,
+      proindex: -1,
+      workarr: [],
+      proarr: [],
+      workoff: false,
+      prooff: false,
+      addwork: "",
+      addpro: "",
+      off: true
     };
   },
   methods: {
     setcontent() {
-      let id = localStorage.getItem("userid");
-      if (id == this.id) {
+      if (this.off) {
         this.setoff = true;
       }
     },
     addworkf() {
-      this.workoff=true;
-    },
-    setoffwork(index){
-      this.workindex = index;
-    },
-    setoffpro(index){
-      this.proindex = index;
-    },
-    addprof() {
-      this.prooff=true;
-    },
-    submitwork(){
-      if(this.addwork==''){
-        this.workoff=false;
-      }else{
-         this.$api.get("experience.php", { userid: this.id,sortid:0,type:0 ,content:this.addwork}, data => {
-          console.log(data);
-          this.workarr = data;
-          this.workoff=false;
-        });
+      if (this.off) {
+      this.workoff = true;
       }
     },
-    submitpro(){
-      if(this.addpro==''){
-        this.prooff=false;
-      }else{
-         this.$api.get("experience.php", { userid: this.id,sortid:1,type:0 ,content:this.addpro}, data => {
-          console.log(data);
-          this.proarr = data;
-          this.prooff=false;
-        });
+    setoffwork(index) {
+      if (this.off) {
+      this.workindex = index;
+      }
+    },
+    setoffpro(index) {
+      if (this.off) {
+      this.proindex = index;
+      }
+    },
+    addprof() {
+      if (this.off) {
+      this.prooff = true;
+      }
+    },
+    submitwork() {
+      if (this.addwork == "") {
+        this.workoff = false;
+      } else {
+        this.$api.get(
+          "experience.php",
+          { userid: this.id, sortid: 0, type: 0, content: this.addwork },
+          data => {
+            console.log(data);
+            this.workarr = data;
+            this.workoff = false;
+          }
+        );
+      }
+    },
+    submitpro() {
+      if (this.addpro == "") {
+        this.prooff = false;
+      } else {
+        this.$api.get(
+          "experience.php",
+          { userid: this.id, sortid: 1, type: 0, content: this.addpro },
+          data => {
+            console.log(data);
+            this.proarr = data;
+            this.prooff = false;
+          }
+        );
       }
     },
     submit() {
@@ -119,56 +143,80 @@ export default {
         }
       );
     },
-    updatawork(index){
-      if(this.workarr[index].content==''){
-          if(confirm("是否确认删除")){
-              let id = this.workarr[index].id;
-              this.$api.get("experience.php", { id:id,userid: this.id,sortid:0,type:2 }, data => {
-                console.log(data);
-                this.workarr = data;
-                this.workindex=-1;
-              });
-          }else{
-              this.$api.get("experience.php", { userid: this.id,sortid:0,type:3}, data => {
-                console.log(data);
-                this.workarr = data;
-                this.workindex=-1;
-              });
-          }
-      }else{
+    updatawork(index) {
+      if (this.workarr[index].content == "") {
+        if (confirm("是否确认删除")) {
+          let id = this.workarr[index].id;
+          this.$api.get(
+            "experience.php",
+            { id: id, userid: this.id, sortid: 0, type: 2 },
+            data => {
+              console.log(data);
+              this.workarr = data;
+              this.workindex = -1;
+            }
+          );
+        } else {
+          this.$api.get(
+            "experience.php",
+            { userid: this.id, sortid: 0, type: 3 },
+            data => {
+              console.log(data);
+              this.workarr = data;
+              this.workindex = -1;
+            }
+          );
+        }
+      } else {
         let id = this.workarr[index].id;
         let content = this.workarr[index].content;
-        this.$api.get("experience.php", { id:id,userid: this.id,sortid:0,type:1 ,content:content}, data => {
-          console.log(data);
-          this.workarr = data;
-          this.workindex=-1;
-        });
+        this.$api.get(
+          "experience.php",
+          { id: id, userid: this.id, sortid: 0, type: 1, content: content },
+          data => {
+            console.log(data);
+            this.workarr = data;
+            this.workindex = -1;
+          }
+        );
       }
     },
-    updatapro(index){
-      if(this.proarr[index].content==''){
-          if(confirm("是否确认删除")){
-              let id = this.proarr[index].id;
-              this.$api.get("experience.php", { id:id,userid: this.id,sortid:1,type:2 }, data => {
-                console.log(data);
-                this.proarr = data;
-                this.proindex=-1;
-              });
-          }else{
-              this.$api.get("experience.php", { userid: this.id,sortid:1,type:3}, data => {
-                console.log(data);
-                this.proarr = data;
-                this.proindex=-1;
-              });
-          }
-      }else{
+    updatapro(index) {
+      if (this.proarr[index].content == "") {
+        if (confirm("是否确认删除")) {
+          let id = this.proarr[index].id;
+          this.$api.get(
+            "experience.php",
+            { id: id, userid: this.id, sortid: 1, type: 2 },
+            data => {
+              console.log(data);
+              this.proarr = data;
+              this.proindex = -1;
+            }
+          );
+        } else {
+          this.$api.get(
+            "experience.php",
+            { userid: this.id, sortid: 1, type: 3 },
+            data => {
+              console.log(data);
+              this.proarr = data;
+              this.proindex = -1;
+            }
+          );
+        }
+      } else {
         let id = this.proarr[index].id;
         let content = this.proarr[index].content;
-        this.$api.get("experience.php", { id:id,userid: this.id,sortid:1,type:1 ,content:content}, data => {
-          console.log(data);
-          this.proarr = data;
-          this.proindex=-1;
-        });
+        this.$api.get(
+          "experience.php",
+          { id: id, userid: this.id, sortid: 1, type: 1, content: content },
+          data => {
+            console.log(data);
+            this.proarr = data;
+            this.proindex = -1;
+          }
+        );
       }
     }
   },
@@ -179,15 +227,24 @@ export default {
       console.log(data);
       this.user = data[0];
     });
-    this.$api.get("experience.php", { userid: id,sortid:0,type:3}, data => {
-      console.log(data);
-      this.workarr = data;
-    });
-    this.$api.get("experience.php", { userid: id,sortid:1,type:3 }, data => {
-      console.log(data);
-      this.proarr = data;
-    });
-
+    this.$api.get(
+      "experience.php",
+      { userid: id, sortid: 0, type: 3 },
+      data => {
+        console.log(data);
+        this.workarr = data;
+      }
+    );
+    this.$api.get(
+      "experience.php",
+      { userid: id, sortid: 1, type: 3 },
+      data => {
+        console.log(data);
+        this.proarr = data;
+      }
+    );
+    this.off = this.$api.login(this.id);
+    console.log(this.off);
   }
 };
 </script>
@@ -195,7 +252,7 @@ export default {
 .header {
   color: #666;
   font-size: 18px;
-  line-height: 30px;
+  line-height: 50px;
   border-bottom: 2px solid #608a60;
   margin-top: 10px;
 }
@@ -228,6 +285,19 @@ export default {
   padding-bottom: 30px;
   border-bottom: 1px dashed #ccc;
   line-height: 22px;
+}
+.addbtn {
+  background: #608a60;
+  color: #fff;
+}
+.addpage {
+  text-align: right;
+  float: right;
+  display: inline-block;
+  
+}
+.addpage button {
+  outline: none;
 }
 </style>
 

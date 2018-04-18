@@ -9,6 +9,7 @@ import Massage from '@/components/Massage'
 import Login from '@/components/Login'
 import Reg from '@/components/Reg'
 import Addpage from '@/components/Addpage'
+import Setuser from '@/components/Setuser'
 import VueQuillEditor from 'vue-quill-editor'
 import 'quill/dist/quill.core.css'
 import 'quill/dist/quill.snow.css'
@@ -33,6 +34,11 @@ export default new Router({
       path: "/photo/:id",
       name: "photo",
       component: Photo
+    },
+    {
+      path: "/setuser/:id",
+      name: "setuser",
+      component: Setuser
     },
     {
       path: "/day/:id",
@@ -64,5 +70,6 @@ export default new Router({
       name: "reg",
       component: Reg
     }
+  
   ]
 })

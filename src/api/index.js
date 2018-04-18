@@ -41,5 +41,9 @@ export default {
   },
   delete: function (url, params, success, failure) {
     return apiAxios('DELETE', url, params, success, failure)
+  },
+  login:function (id){
+      let userid = localStorage.getItem("userid");
+      return userid == id;
   }
 }

@@ -6,11 +6,12 @@ import router from './router'
 import iView from 'iview'
 import 'iview/dist/styles/iview.css'
 import api from './api/index.js'
+
 Vue.use(iView)
 Vue.config.productionTip = false
 Vue.prototype.$api = api
 Vue.prototype.url = "http://127.0.0.1/workphp"
-Vue.prototype.off = true
+
 
 
 /* eslint-disable no-new */
@@ -20,3 +21,5 @@ new Vue({
   components: { App },
   template: '<App/>'
 })
+
+

@@ -204,10 +204,12 @@ export default {
     }
   },
   mounted() {
+    this.$api.page();
     this.uploadList = this.$refs.upload.fileList;
 
     this.id = this.$route.params.id;
     this.type = this.$route.params.type;
+    
     let id = this.id;
     if (this.type == "0") {
       this.$api.get("home.php", { id: id }, data => {
