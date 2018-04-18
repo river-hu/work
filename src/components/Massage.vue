@@ -12,7 +12,7 @@
     </Card>
     </div>
     
-     <Card class="list">
+     <Card class="list" v-if="off">
            <Form :model="formItem" :label-width="80">
         <FormItem label="您的大名">
             <Input v-model="formItem.input" placeholder="输入你的大名"></Input>
@@ -25,6 +25,11 @@
             <Button type="ghost" style="margin-left: 8px">取消</Button>
         </FormItem>
     </Form>  
+    </Card>
+     <Card class="list" v-else>
+          <p>
+            您在24小时内留过言了，为缓解服务器的压力，请稍等片刻
+          </p>
     </Card>
     
   </div>
@@ -39,7 +44,8 @@ export default {
         textarea: ""
       },
       id:'',
-      msgarr:[]
+      msgarr:[],
+      off:true
     };
   },
   methods:{
@@ -49,11 +55,24 @@ export default {
             this.msgarr = data;
             this.formItem.textarea='';
             this.formItem.input='';
+            var data = new Date();
+            localStorage.setItem('msg',data);
+            this.off=false;
         });
     }
   },
   created() {
     this.id = this.$route.params.id;
+    let date = localStorage.getItem('msg');
+    date = new Date(date);
+    let newdate = new Date();
+
+    if(newdate-date<86400000){
+      this.off=false;
+    }else{
+      this.off = true;
+    }
+    console.log(this.off)
     this.$api.get("photo.php", { userid: this.id, sortid: 1, type: 4}, data => {
             console.log(data);
             this.msgarr = data;
