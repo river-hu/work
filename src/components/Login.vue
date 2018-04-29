@@ -40,7 +40,6 @@
         login(){
              var params =  "name="+this.user+ "&password="+this.pass;
             this.$api.post('login.php', params, (data) => {
-              console.log(data);
               if(data.length==1){
                 this.$Message.success('登陆成功');
                 localStorage.setItem("userid",data[0].id);

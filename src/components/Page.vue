@@ -1,7 +1,7 @@
 <template>
   <div id="page">
     <div class="title">{{page.title}}</div>
-    <div class="img" :style="{'background-image':'url(http://127.0.0.1/workphp/img/'+page.img+')'}">  
+    <div class="img" :style="{'background-image':'url('+url+'/img/'+page.img+')'}">  
     </div>
     <div class="content" v-html="page.content">
     </div>
@@ -19,7 +19,6 @@ export default {
   created(){
     this.pageid = this.$route.query.pageid;
     this.$api.get("page.php",{id:'-1',sortid:'-1',pageid:this.pageid},(data)=>{
-          console.log(data);
           this.page=data[0];
       })
   }

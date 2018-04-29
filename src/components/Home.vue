@@ -94,7 +94,7 @@ export default {
          let id= this.id;
          var name = this.sortname;
         this.$api.get("addsort.php",{id:id,scroe:0,sortname:name,sortid:'-1'},(data)=>{
-            console.log(data);
+
           this.user.pages=data;
            this.sortoff = false;
            this.sortname = '';
@@ -104,7 +104,7 @@ export default {
           let sortid = this.user.pages[index].id;
           this.pageindex = index;
             this.$api.get("page.php",{id:this.id,sortid:sortid,pageid:'-1'},(data)=>{
-          console.log(data);
+
           this.pagearr=data;
       })
       }
@@ -113,14 +113,21 @@ export default {
       this.id = this.$route.params.id;
       let id = this.id;
       this.$api.get("home.php",{id:id},(data)=>{
-          console.log(data);
+  
           this.user=data[0];
       })
       this.$api.get("page.php",{id:id,sortid:'-2',pageid:'-1'},(data)=>{
-          console.log(data);
+   
           this.pagearr=data;
       })
       this.off = this.$api.login(this.id);
+      if(this.id==undefined||this.id==null){
+
+          this.$route.push('/login/');
+      }else{
+
+      }
+
   }
 }
 </script>

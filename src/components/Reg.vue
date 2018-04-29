@@ -180,7 +180,6 @@ export default {
           params.append("header", this.imgName);
           params.append("password", this.formValidate.password);
           this.$api.post("regs.php", params, data => {
-            console.log(data);
              this.$Modal.success({
                             title: '成功',
                             content: '点击确认跳转登陆页面',
@@ -192,7 +191,6 @@ export default {
           });
         } else {
           this.$Message.error("表单验证失败!");
-          console.log(this.formValidate.date);
         }
       });
     },
@@ -201,7 +199,6 @@ export default {
       params.append("type", 2);
       params.append("name", this.formValidate.mail);
       this.$api.post("regs.php", params, data => {
-        console.log(data);
         if(data.length!=0){
           this.$Modal.warning({
                             title: '警告',
@@ -261,7 +258,6 @@ export default {
     let params = new URLSearchParams();
     params.append("type", 0);
     this.$api.post("regs.php", params, data => {
-      console.log(data);
       this.id = data;
     });
 

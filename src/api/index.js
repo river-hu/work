@@ -1,6 +1,6 @@
 // 配置API接口地址
 // var root = 'http://localhost:9000/api/v1';
-var root = 'http://127.0.0.1/workphp';
+var root = 'https://www.ai0011.com/work/workphp';
 // 引用axios
 var axios = require('axios')
 
@@ -44,6 +44,11 @@ export default {
   },
   login:function (id){
       let userid = localStorage.getItem("userid");
-      return userid == id;
+      if(userid==null){
+        return false;
+      }else{
+        return userid == id;
+      }
+      
   }
 }

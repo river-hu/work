@@ -9,7 +9,7 @@
         </div>
         </Card>
       </div>
-<Card style="width:300px" class="card" >
+<Card style="width:300px" class="card" v-if="off&&len">
          <Upload
         ref="upload"
         :show-upload-list="false"
@@ -21,7 +21,8 @@
         type="drag"
         name="file"
         :data="{id:id}"
-        action="http://127.0.0.1/workphp/uploadimg.php">
+        :action="url+'/uploadimg.php'"
+        >
          
         <div style="padding: 20px 0;height:185px;">
             <Icon type="ios-cloud-upload" size="52" style="color: #3399ff;margin-top:35px;"></Icon>
@@ -49,7 +50,9 @@ export default {
       id: 0,
       imgarr: [],
       model: {},
-      imgindex: -1
+      imgindex: -1,
+      off:true,
+      len:true
     };
   },
   methods: {
@@ -69,7 +72,6 @@ export default {
           "photo.php",
           { id: id, userid: this.id, sortid: 0, type: 2 },
           data => {
-            console.log(data);
             this.imgarr = data;
             this.imgindex = -1;
             this.visible = false;
@@ -84,7 +86,6 @@ export default {
         "photo.php",
         { id: id, userid: this.id, sortid: 0, type: 1, name: name },
         data => {
-          console.log(data);
           this.imgarr = data;
           this.imgindex = -1;
         }
@@ -93,6 +94,9 @@ export default {
     handleSuccess(res) {
         this.$api.get("photo.php", { userid: this.id, sortid: 0, type: 0,content:res }, data => {
             this.imgarr = data;
+             if(this.imgarr.length>10){
+        this.len=false;
+      }
         });
     },
     handleFormatError(file) {
@@ -112,9 +116,13 @@ export default {
     this.id = this.$route.params.id;
     let id = this.id;
     this.$api.get("photo.php", { userid: id, sortid: 0, type: 4 }, data => {
-      console.log(data);
+
       this.imgarr = data;
+      if(this.imgarr.length>10){
+        this.len=false;
+      }
     });
+     this.off = this.$api.login(this.id);
   }
 };
 </script>

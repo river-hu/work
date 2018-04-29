@@ -34,14 +34,14 @@
         type="drag"
         name="file"
         :data="{id:id}"
-        action="http://127.0.0.1/workphp/uploadimg.php"
+        :action="url+'/uploadimg.php'"
         style="display: inline-block;width:58px;">
         <div style="width: 58px;height:58px;line-height: 58px;">
             <Icon type="camera" size="20"></Icon>
         </div>
     </Upload>
     <Modal title="View Image" v-model="visible">
-        <img :src="'http://127.0.0.1/workphp/img/'+id+'/'+imgName" v-if="visible" style="width: 100%">
+        <img :src="url+'/img/'+id+'/'+imgName" v-if="visible" style="width: 100%">
     </Modal>
         <quill-editor v-model="content"
                         ref="myQuillEditor"
@@ -100,16 +100,16 @@ export default {
   // 如果需要手动控制数据同步，父组件需要显式地处理changed事件
   methods: {
     onEditorBlur(quill) {
-      console.log("editor blur!", quill);
+
     },
     onEditorFocus(quill) {
-      console.log("editor focus!", quill);
+ 
     },
     onEditorReady(quill) {
-      console.log("editor ready!", quill);
+
     },
     onEditorChange({ quill, html, text }) {
-      console.log("editor change!", quill, html, text);
+ 
       this.content = html;
     },
     submit() {
@@ -172,8 +172,8 @@ export default {
       this.$refs.upload.fileList.splice(fileList.indexOf(file), 1);
     },
     handleSuccess(res, file) {
-      console.log(res);
-      file.url = "http://127.0.0.1/workphp/img/" + this.id + "/" + res;
+
+       file.url = this.url+'/img/' + this.id + "/" + res;
       file.name = res;
     },
     handleFormatError(file) {
@@ -204,16 +204,14 @@ export default {
     }
   },
   mounted() {
-    this.$api.page();
     this.uploadList = this.$refs.upload.fileList;
-
     this.id = this.$route.params.id;
     this.type = this.$route.params.type;
     
     let id = this.id;
     if (this.type == "0") {
       this.$api.get("home.php", { id: id }, data => {
-        console.log(data);
+      
         this.cityList = data[0].pages;
         this.model1 = data[0].pages[0].id;
       });

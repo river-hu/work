@@ -51,7 +51,6 @@ export default {
   methods:{
     submit(){
        this.$api.get("photo.php", { userid: this.id, sortid: 1, type: 3,content:this.formItem.textarea,name:this.formItem.input}, data => {
-            console.log(data);
             this.msgarr = data;
             this.formItem.textarea='';
             this.formItem.input='';
@@ -72,9 +71,7 @@ export default {
     }else{
       this.off = true;
     }
-    console.log(this.off)
     this.$api.get("photo.php", { userid: this.id, sortid: 1, type: 4}, data => {
-            console.log(data);
             this.msgarr = data;
         });
   }

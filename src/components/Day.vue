@@ -34,7 +34,6 @@ export default {
     this.id = this.$route.params.id;
      this.off = this.$api.login(this.id);
     this.$api.get("page.php",{id:this.id,sortid:'-1',pageid:'-1'},(data)=>{
-          console.log(data);
           this.pagearr=data;
       })
   }

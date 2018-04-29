@@ -110,7 +110,6 @@ export default {
           "experience.php",
           { userid: this.id, sortid: 0, type: 0, content: this.addwork },
           data => {
-            console.log(data);
             this.workarr = data;
             this.workoff = false;
           }
@@ -125,7 +124,6 @@ export default {
           "experience.php",
           { userid: this.id, sortid: 1, type: 0, content: this.addpro },
           data => {
-            console.log(data);
             this.proarr = data;
             this.prooff = false;
           }
@@ -137,7 +135,6 @@ export default {
         "setuser.php",
         { id: this.id, name: "dec", value: this.user.dec },
         data => {
-          console.log(data);
           this.user = data[0];
           this.setoff = false;
         }
@@ -151,7 +148,6 @@ export default {
             "experience.php",
             { id: id, userid: this.id, sortid: 0, type: 2 },
             data => {
-              console.log(data);
               this.workarr = data;
               this.workindex = -1;
             }
@@ -161,7 +157,6 @@ export default {
             "experience.php",
             { userid: this.id, sortid: 0, type: 3 },
             data => {
-              console.log(data);
               this.workarr = data;
               this.workindex = -1;
             }
@@ -189,7 +184,6 @@ export default {
             "experience.php",
             { id: id, userid: this.id, sortid: 1, type: 2 },
             data => {
-              console.log(data);
               this.proarr = data;
               this.proindex = -1;
             }
@@ -199,7 +193,6 @@ export default {
             "experience.php",
             { userid: this.id, sortid: 1, type: 3 },
             data => {
-              console.log(data);
               this.proarr = data;
               this.proindex = -1;
             }
@@ -212,7 +205,6 @@ export default {
           "experience.php",
           { id: id, userid: this.id, sortid: 1, type: 1, content: content },
           data => {
-            console.log(data);
             this.proarr = data;
             this.proindex = -1;
           }
@@ -224,14 +216,12 @@ export default {
     this.id = this.$route.params.id;
     let id = this.id;
     this.$api.get("home.php", { id: id }, data => {
-      console.log(data);
       this.user = data[0];
     });
     this.$api.get(
       "experience.php",
       { userid: id, sortid: 0, type: 3 },
       data => {
-        console.log(data);
         this.workarr = data;
       }
     );
@@ -239,12 +229,11 @@ export default {
       "experience.php",
       { userid: id, sortid: 1, type: 3 },
       data => {
-        console.log(data);
         this.proarr = data;
       }
     );
     this.off = this.$api.login(this.id);
-    console.log(this.off);
+
   }
 };
 </script>

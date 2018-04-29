@@ -92,6 +92,10 @@ export default {
           this.off=false;
       }
       this.login = this.$api.login(this.id);
+      if(this.id==undefined||this.id==null){
+          this.$router.push('/login/');
+      }else{
+      }
   }
 }
 </script>
